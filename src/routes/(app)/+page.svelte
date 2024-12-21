@@ -1,124 +1,153 @@
 <script lang="ts">
-	import { Rocket, Palette, Zap, Copy, Check, Blocks, TestTube, Scale } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-	let copied = false;
-	const copyCommand = async () => {
-		const command = 'git clone https://github.com/JamesHusband/sveltstrap';
-		await navigator.clipboard.writeText(command);
-		copied = true;
-		setTimeout(() => {
-			copied = false;
-		}, 2000);
-	};
+	// Featured games data
+	const featuredGames = [
+		{
+			title: 'Ant Keeper',
+			description: 'Build and manage your own ant colony! Start with a single queen ant and grow your colony into a thriving empire. Collect resources, expand your territory, and protect your ants from predators in this engaging simulation game.',
+			image: '/images/ant-keeper.webp',
+			tags: ['Simulation', 'Strategy', 'Management']
+		},
+		{
+			title: 'Tour Program',
+			description: 'Experience the thrill of being a tour guide! Navigate through beautiful locations, manage your group, and create unforgettable experiences. A unique simulation game that puts you in charge of organizing and leading amazing tours.',
+			image: '/images/tour-program.jpeg',
+			tags: ['Simulation', 'Adventure', 'Management']
+		}
+	];
+
+	// Game grid data
+	const games = [
+		{
+			title: 'Ant Keeper',
+			image: '/images/ant-keeper.webp',
+			tags: ['Simulation', 'Strategy'],
+			github: 'https://github.com/JamesHusband/Ant-Keeper'
+		},
+		{
+			title: 'Tour Program',
+			image: '/images/tour-program.jpeg',
+			tags: ['Simulation', 'Adventure'],
+			github: 'https://github.com/JamesHusband/TourProgram'
+		}
+	];
+
+	let currentSlide = 0;
+
+	function nextSlide() {
+		currentSlide = (currentSlide + 1) % featuredGames.length;
+	}
+
+	function prevSlide() {
+		currentSlide = (currentSlide - 1 + featuredGames.length) % featuredGames.length;
+	}
+
+	// Auto-advance carousel every 5 seconds
+	setInterval(() => {
+		if (featuredGames.length > 1) {
+			nextSlide();
+		}
+	}, 5000);
 </script>
 
-<main class="min-h-screen blueprint-bg text-white overflow-hidden flex flex-col">
-	<!-- Header Section -->
-	<section class="fixed top-0 left-0 right-0 text-center py-12 z-50 bg-[#0a192f] shadow-lg">
-		<div class="container mx-auto px-4">
-			<h1 class="text-4xl font-bold mb-3 text-blue-300">SveltStrap</h1>
-			<p class="text-lg text-blue-200/80 mb-6">A modern, lightweight SvelteKit boilerplate</p>
-			<div class="flex justify-center gap-4">
-				<a
-					href="https://github.com/JamesHusband/sveltstrap"
-					class="inline-flex items-center px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-400 transition-colors"
+<main class="min-h-screen bg-[#FFE4C4] text-[#4A3B38]">
+	<!-- Featured Games Carousel -->
+	<section class="relative h-[600px] mb-8">
+		<div class="absolute inset-0 overflow-hidden">
+			{#each featuredGames as game, i}
+				<div
+					class="absolute inset-0 transition-opacity duration-500"
+					class:opacity-100={i === currentSlide}
+					class:opacity-0={i !== currentSlide}
 				>
-					Get Started
-				</a>
-				<a
-					href="/docs"
-					class="inline-flex items-center px-5 py-2.5 border-2 border-blue-400 rounded-lg hover:border-blue-300 hover:text-blue-300 transition-colors"
-				>
-					Documentation
-				</a>
-			</div>
+					<div class="absolute inset-0 bg-gradient-to-r from-[#4A3B38]/70 to-transparent z-10" />
+					<img
+						src={game.image}
+						alt={game.title}
+						class="w-full h-full object-cover"
+					/>
+					<div class="absolute bottom-0 left-0 right-0 p-8 z-20 bg-gradient-to-t from-[#4A3B38]/90">
+						<div class="container mx-auto">
+							<h1 class="text-5xl font-bold mb-4 text-[#FFE4C4]">{game.title}</h1>
+							<p class="text-lg mb-6 max-w-2xl text-[#FFE4C4]/90">{game.description}</p>
+							<div class="flex items-center gap-4">
+								<a 
+									href={game.title === 'Ant Keeper' 
+										? 'https://github.com/JamesHusband/Ant-Keeper'
+										: 'https://github.com/JamesHusband/TourProgram'} 
+									target="_blank" 
+									rel="noopener noreferrer"
+									class="bg-[#FF6B4A] hover:bg-[#FF8366] px-8 py-3 rounded-lg font-semibold flex items-center gap-2 text-white transition-colors"
+								>
+									Play Now
+								</a>
+								<div class="flex flex-wrap gap-2">
+									{#each game.tags as tag}
+										<span class="text-sm px-3 py-1 bg-[#FFE4C4]/20 rounded text-[#FFE4C4]">{tag}</span>
+									{/each}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/each}
 		</div>
+		{#if featuredGames.length > 1}
+			<button
+				class="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-[#FFE4C4]/10 hover:bg-[#FFE4C4]/20 rounded-full z-30 text-[#FFE4C4]"
+				on:click={prevSlide}
+			>
+				<ChevronLeft class="w-8 h-8" />
+			</button>
+			<button
+				class="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-[#FFE4C4]/10 hover:bg-[#FFE4C4]/20 rounded-full z-30 text-[#FFE4C4]"
+				on:click={nextSlide}
+			>
+				<ChevronRight class="w-8 h-8" />
+			</button>
+		{/if}
 	</section>
 
-	<!-- Content -->
-	<div class="flex-1 pt-[240px]">
-		<div class="container mx-auto px-4">
-			<section class="grid md:grid-cols-2 gap-6 mb-12">
-				<div class="p-5 rounded-lg border border-blue-400/30 bg-blue-950/30 backdrop-blur-sm">
-					<Blocks class="w-10 h-10 text-blue-300 mb-3" />
-					<h2 class="text-lg font-semibold mb-2 text-blue-200">Component Based</h2>
-					<p class="text-blue-200/80 text-sm">
-						Built with reusable components using Svelte's powerful component system for maximum
-						flexibility and maintainability.
-					</p>
+	<!-- Games Grid -->
+	<section class="container mx-auto px-4 py-8">
+		<h2 class="text-2xl font-bold mb-6">Our Games</h2>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			{#each games as game}
+				<div class="group relative bg-white/90 rounded-lg overflow-hidden hover:scale-105 transition-transform shadow-lg">
+					<img
+						src={game.image}
+						alt={game.title}
+						class="w-full aspect-[16/9] object-cover"
+					/>
+					<div class="p-4">
+						<h3 class="font-medium mb-2">{game.title}</h3>
+						<div class="flex flex-wrap gap-2 mb-3">
+							{#each game.tags as tag}
+								<span class="text-xs px-2 py-1 bg-[#FFE4C4] rounded text-[#4A3B38]">{tag}</span>
+							{/each}
+						</div>
+						<div class="flex justify-end">
+							<a 
+								href={game.github}
+								target="_blank" 
+								rel="noopener noreferrer"
+								class="opacity-0 group-hover:opacity-100 transition-opacity bg-[#FF6B4A] hover:bg-[#FF8366] px-4 py-2 rounded text-white"
+							>
+								Play Now
+							</a>
+						</div>
+					</div>
 				</div>
-
-				<div class="p-5 rounded-lg border border-blue-400/30 bg-blue-950/30 backdrop-blur-sm">
-					<Palette class="w-10 h-10 text-blue-300 mb-3" />
-					<h2 class="text-lg font-semibold mb-2 text-blue-200">Modern Styling</h2>
-					<p class="text-blue-200/80 text-sm">
-						Powered by TailwindCSS and shadcn-svelte for beautiful, responsive, and customizable
-						designs.
-					</p>
-				</div>
-
-				<div class="p-5 rounded-lg border border-blue-400/30 bg-blue-950/30 backdrop-blur-sm">
-					<TestTube class="w-10 h-10 text-blue-300 mb-3" />
-					<h2 class="text-lg font-semibold mb-2 text-blue-200">Full Test Suite</h2>
-					<p class="text-blue-200/80 text-sm">
-						Comprehensive testing with ViTest for unit tests, Playwright for E2E, and Storybook for
-						component testing.
-					</p>
-				</div>
-
-				<div class="p-5 rounded-lg border border-blue-400/30 bg-blue-950/30 backdrop-blur-sm">
-					<Scale class="w-10 h-10 text-blue-300 mb-3" />
-					<h2 class="text-lg font-semibold mb-2 text-blue-200">Scalable As Standard</h2>
-					<p class="text-blue-200/80 text-sm">
-						Built with scalability in mind, featuring a well-organized structure and best practices
-						for growing applications.
-					</p>
-				</div>
-			</section>
-
-			<section class="text-center">
-				<h2 class="text-2xl font-bold mb-3 text-blue-300">Ready to Build?</h2>
-				<p class="text-lg text-blue-200/80 mb-6">Start your next project with SveltStrap today.</p>
-				<div class="relative inline-block">
-					<pre
-						class="bg-blue-950/50 border border-blue-400/30 text-blue-200 p-4 pr-12 rounded-lg text-left backdrop-blur-sm text-sm"><code
-							><span class="cursor">></span
-							> git clone https://github.com/JamesHusband/sveltstrap</code
-						></pre>
-					<button
-						on:click={copyCommand}
-						class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-blue-400 hover:text-blue-300 transition-colors"
-						aria-label="Copy command"
-					>
-						{#if copied}
-							<Check class="w-5 h-5" />
-						{:else}
-							<Copy class="w-5 h-5" />
-						{/if}
-					</button>
-				</div>
-			</section>
+			{/each}
 		</div>
-	</div>
+	</section>
 </main>
 
 <style>
-	.blueprint-bg {
-		background-color: #0a192f;
-		background-image: linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-		background-size: 2rem 2rem;
-		position: relative;
-	}
-
-	.cursor {
-		animation: cursor 1s infinite step-end;
-		margin-right: 0.5rem;
-	}
-
-	@keyframes cursor {
-		50% {
-			opacity: 0;
-		}
+	:global(body) {
+		background-color: #FFE4C4;
+		margin: 0;
+		padding: 0;
 	}
 </style>
