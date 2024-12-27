@@ -1,6 +1,5 @@
-
 <p align="center">
-    <img src="https://i.ibb.co/P6bKhkx/fantakuchen.webp" alt="Fantakuchen" />
+    <img src=".github/readme.webp" alt="Fantakuchen" />
 </p>
 
 <p align="center">
@@ -19,7 +18,6 @@
 </p>
 
 <br/>
-
 
 # Willkommen zu Fantakuchen!
 
